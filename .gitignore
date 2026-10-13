@@ -1,0 +1,30 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+db.sqlite3
+/backend/media/
+/backend/staticfiles/
+.env
+venv/
+env/
+ENV/
+*.log
+
+# Node / React
+node_modules/
+/frontend/dist/
+/frontend/build/
+.npm
+*.tsbuildinfo
+
+# IDEs & OS
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
