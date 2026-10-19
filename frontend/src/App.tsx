@@ -1,14 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainLayout from "./component/layout/MainLayout";
 import Placeholder from "./page/Placeholder";
+import Discover from "./page/Discover";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Screens WITH the navbar */}
+      {/* Screens WITH the navbar */}
         <Route element={<MainLayout />}>
-          <Route index element={<Placeholder title="Discover" />} />
+          <Route index element={<Discover />} />
           <Route path="my-services" element={<Placeholder title="My Services" />} />
           <Route path="activity" element={<Placeholder title="Activity" />} />
           <Route path="profile" element={<Placeholder title="Public Profile" />} />
