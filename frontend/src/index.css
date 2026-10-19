@@ -1,33 +1,83 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-:root {
---primary: #4f46e5;
---primary-hover: #4338ca;
---secondary: #06b6d4;
---accent: #10b981;
---bg-main: #f8fafc;
---card-bg: #ffffff;
---text-main: #0f172a;
---text-muted: #64748b;
---border: #e2e8f0;
+@theme {
+  /* ---------- Fonts ---------- */
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- Brand (indigo) ---------- */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5; /* primary buttons, active tab, links */
+  --color-brand-700: #4338ca; /* hover, link text */
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81; /* hero banner */
+  --color-brand-950: #1e1b4b; /* auth side panel */
+
+  /* ---------- Accent (amber) ---------- */
+  --color-accent-100: #fef3c7;
+  --color-accent-400: #fbbf24; /* eyebrow text, highlights */
+  --color-accent-500: #f59e0b; /* rating stars */
+  --color-accent-700: #b45309; /* pending text */
+
+  /* ---------- Status ---------- */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-600: #059669;
+  --color-success-700: #047857; /* prices in briefs, Mark as Completed */
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-300: #fca5a5;
+  --color-danger-600: #dc2626;
+  --color-danger-800: #991b1b;
+
+  --color-info-100: #dbeafe;
+  --color-info-500: #3b82f6; /* unread dot */
+  --color-info-700: #1d4ed8;
+
+  /* ---------- Neutrals ---------- */
+  --color-ink-900: #0f172a; /* headings */
+  --color-ink-700: #334155; /* body */
+  --color-ink-500: #64748b; /* muted text */
+  --color-ink-400: #94a3b8; /* placeholders, icons */
+  --color-line: #e2e8f0; /* borders, dividers */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc; /* page background */
+  --color-surface-subtle: #f1f5f9; /* segmented tabs, kanban columns */
+
+  /* ---------- Category tints (card cover backgrounds) ---------- */
+  --color-cat-design: #e0e7ff;
+  --color-cat-media: #ffedd5;
+  --color-cat-video: #ede9fe;
+  --color-cat-tech: #e0f2fe;
+  --color-cat-academic: #dcfce7;
+  --color-cat-beauty: #ffe4e6;
+  --color-cat-tailoring: #fef3c7;
+  --color-cat-code: #ecfccb;
+  --color-cat-marketing: #f1f5f9;
+
+  /* ---------- Radius ---------- */
+  --radius-sm: 0.5rem; /* 8px  small buttons, chips in tight spots */
+  --radius-md: 0.625rem; /* 10px inputs, buttons */
+  --radius-lg: 0.75rem; /* 12px nested panels */
+  --radius-xl: 1rem; /* 16px cards */
+  --radius-2xl: 1.5rem; /* 24px modals, sheets */
+
+  /* ---------- Shadows ---------- */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06);
+  --shadow-card-hover: 0 4px 12px rgb(15 23 42 / 0.08);
+  --shadow-popover: 0 10px 30px rgb(15 23 42 / 0.12);
+  --shadow-modal: 0 20px 50px rgb(15 23 42 / 0.25);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  body {
+    @apply bg-surface-muted font-sans text-ink-700 antialiased;
   }
-
-body {
-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-background-color: var(--bg-main);
-color: var(--text-main);
-line-height: 1.5;
--webkit-font-smoothing: antialiased;
-}
-
-button {
-font-family: inherit;
-cursor: pointer;
+  h1, h2, h3 {
+    @apply font-display text-ink-900;
+  }
 }
