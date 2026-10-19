@@ -1,28 +1,36 @@
-// Types for the login / create-account screens.
-// Kept in their own file so they never clash with types/index.ts (the shared API contract).
-import type { User } from './index'
 
-export type AuthMode = 'login' | 'register'
+// Authentication types for login and account creation.
+
+import type { User } from "./index";
+
+export type AuthMode = "login" | "register";
 
 export interface LoginForm {
-  identifier: string // email OR username
-  password: string
-  remember: boolean
+  identifier: string;
+  password: string;
+  remember: boolean;
 }
 
 export interface RegisterForm {
-  fullName: string
-  institution: string
-  email: string
-  departmentLevel: string // e.g. "Computer Science, 300L"
-  password: string
+  fullName: string;
+  institution: string;
+  email: string;
+  departmentLevel: string;
+  password: string;
+  confirmPassword: string;
 }
 
-export type AuthUser = User
+// User returned by the backend after authentication.
+export type AuthUser = User;
 
-// What we expect back from POST /api/auth/login/ and /api/auth/register/
-// (the backend auth dev can adjust this, just tell the frontend team)
 export interface AuthResponse {
-  token: string
-  user: AuthUser
+  token: string;
+  user: AuthUser;
 }
+
+export interface AuthError {
+  detail?: string;
+  message?: string;
+  errors?: Record<string, string[]>;
+}
+
