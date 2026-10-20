@@ -16,7 +16,7 @@ A peer-to-peer student marketplace where students can discover, offer, and reque
 ### 1. Clone the Repository
 ```bash
 git clone <YOUR_GITHUB_REPO_URL>
-cd "Gravity Projects" # (or your repo folder name)
+cd CampusSkills # (or your repo folder name)
 ```
 
 ---
