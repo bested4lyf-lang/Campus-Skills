@@ -3,6 +3,7 @@ import MainLayout from "./component/layout/MainLayout";
 import Discover from "./page/Discover";
 import AuthPage from "./page/AuthPage";
 import Placeholder from "./page/Placeholder";
+import Activity from "./page/Activity";
 
 export default function App() {
 return ( <BrowserRouter> <Routes>
@@ -15,7 +16,7 @@ return ( <BrowserRouter> <Routes>
     <Route element={<MainLayout />}>
       <Route path="/" element={<Discover />} />
       <Route path="/discover" element={<Discover />} />
-      <Route path="/activity" element={<Placeholder title="Activity" />} />
+      <Route path="/activity" element={<Activity />} />
       <Route path="/messages" element={<Placeholder title="Messages" />} />
       <Route path="/profile" element={<Placeholder title="Profile" />} />
     </Route>
