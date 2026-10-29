@@ -32,6 +32,8 @@ urlpatterns = [
     path('api/health/', api_health, name='api-health'),
     # Accounts & Authentication Endpoints
     path('api/auth/', include('accounts.urls')),
+    # Marketplace & Services Endpoints
+    path('api/services/', include('services.urls')),
 ]
 
 if settings.DEBUG:
