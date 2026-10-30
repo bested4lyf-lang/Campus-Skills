@@ -3,6 +3,7 @@ import MainLayout from "./component/layout/MainLayout";
 import Discover from "./page/Discover";
 import AuthPage from "./page/AuthPage";
 import Placeholder from "./page/Placeholder";
+import PublicProfile from "./page/PublicProfile";
 
 export default function App() {
 return ( <BrowserRouter> <Routes>
@@ -17,7 +18,9 @@ return ( <BrowserRouter> <Routes>
       <Route path="/discover" element={<Discover />} />
       <Route path="/activity" element={<Placeholder title="Activity" />} />
       <Route path="/messages" element={<Placeholder title="Messages" />} />
-      <Route path="/profile" element={<Placeholder title="Profile" />} />
+      <Route path="/profile" element={<PublicProfile />} />
+      <Route path="/profile/edit" element={<PublicProfile editing />} />
+      <Route path="/profile/:id" element={<PublicProfile />} />
     </Route>
 
     {/* Redirect unknown routes to Discover. */}
