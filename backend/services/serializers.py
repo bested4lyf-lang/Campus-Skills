@@ -58,6 +58,8 @@ class ServiceListingListSerializer(serializers.ModelSerializer):
     """Lightweight serializer optimized for 16:9 marketplace discovery cards."""
     provider = ProviderSummarySerializer(read_only=True)
     category = CategorySerializer(read_only=True)
+    average_rating = serializers.FloatField(read_only=True)
+    review_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ServiceListing
@@ -71,6 +73,8 @@ class ServiceListingListSerializer(serializers.ModelSerializer):
             'is_active',
             'category',
             'provider',
+            'average_rating',
+            'review_count',
             'created_at',
         ]
 
@@ -80,6 +84,8 @@ class ServiceListingDetailSerializer(serializers.ModelSerializer):
     provider = ProviderSummarySerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     gallery_images = ServiceSampleImageSerializer(many=True, read_only=True)
+    average_rating = serializers.FloatField(read_only=True)
+    review_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ServiceListing
@@ -95,6 +101,8 @@ class ServiceListingDetailSerializer(serializers.ModelSerializer):
             'is_active',
             'category',
             'provider',
+            'average_rating',
+            'review_count',
             'created_at',
             'updated_at',
         ]

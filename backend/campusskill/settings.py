@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'services',
+    'requests',
+    'reviews',
 ]
 
 MIDDLEWARE = [
@@ -181,6 +183,12 @@ JAZZMIN_SETTINGS = {
         "accounts.StudentProfile": "fas fa-id-card",
         "accounts.Institution": "fas fa-university",
         "accounts.ActiveSession": "fas fa-shield-alt",
+        "services.Category": "fas fa-th-list",
+        "services.ServiceListing": "fas fa-briefcase",
+        "services.ServiceSampleImage": "fas fa-images",
+        "requests.ServiceRequest": "fas fa-tasks",
+        "requests.RequestAttachment": "fas fa-paperclip",
+        "reviews.OrderReview": "fas fa-star",
         "auth.Group": "fas fa-users",
         "token_blacklist.BlacklistedToken": "fas fa-ban",
         "token_blacklist.OutstandingToken": "fas fa-key",
