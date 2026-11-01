@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Avg
 
 
 class Category(models.Model):
@@ -61,6 +62,17 @@ class ServiceListing(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        
+    @property
+    def average_rating(self):
+        """Calculates average star rating for this service (e.g., 4.8)."""
+        result = self.reviews.aggregate(avg=Avg('rating'))['avg']
+        return round(float(result), 1) if result is not None else 0.0
+
+    @property
+    def review_count(self):
+        """Total number of verified reviews for this service."""
+        return self.reviews.count()
 
     def __str__(self):
         return f"{self.title} - ₦{self.starting_price} ({self.provider.username})"
