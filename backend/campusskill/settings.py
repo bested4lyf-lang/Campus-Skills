@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Jazzmin MUST come before django.contrib.admin
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'services',
     'requests',
     'reviews',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -183,12 +185,14 @@ JAZZMIN_SETTINGS = {
         "accounts.StudentProfile": "fas fa-id-card",
         "accounts.Institution": "fas fa-university",
         "accounts.ActiveSession": "fas fa-shield-alt",
+        "accounts.BankPayoutInfo": "fas fa-money-check-alt",
         "services.Category": "fas fa-th-list",
         "services.ServiceListing": "fas fa-briefcase",
         "services.ServiceSampleImage": "fas fa-images",
         "requests.ServiceRequest": "fas fa-tasks",
         "requests.RequestAttachment": "fas fa-paperclip",
         "reviews.OrderReview": "fas fa-star",
+        "notifications.Notification": "fas fa-bell",
         "auth.Group": "fas fa-users",
         "token_blacklist.BlacklistedToken": "fas fa-ban",
         "token_blacklist.OutstandingToken": "fas fa-key",

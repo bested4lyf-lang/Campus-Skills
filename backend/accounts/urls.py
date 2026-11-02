@@ -3,6 +3,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
     ActiveSessionListView,
+    BankPayoutInfoView,
     ChangePasswordView,
     CustomTokenObtainPairView,
     DeleteAccountView,
@@ -10,6 +11,7 @@ from .views import (
     LogoutView,
     PrivacySettingsView,
     RegisterView,
+    SupportedBanksListView,
     UserProfileView,
 )
 
@@ -28,6 +30,10 @@ urlpatterns = [
     path('settings/privacy/', PrivacySettingsView.as_view(), name='privacy_settings'),
     path('sessions/', ActiveSessionListView.as_view(), name='active_sessions'),
     path('delete-account/', DeleteAccountView.as_view(), name='delete_account'),
+    
+    # Payout & Bank Details (Settings Tab 2)
+    path('settings/payout/', BankPayoutInfoView.as_view(), name='payout_settings'),
+    path('payouts/banks/', SupportedBanksListView.as_view(), name='supported_banks'),
 
     # Meta / Onboarding
     path('institutions/', InstitutionListView.as_view(), name='institution_list'),
