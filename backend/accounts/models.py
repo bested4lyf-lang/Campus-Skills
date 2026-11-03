@@ -89,3 +89,84 @@ class ActiveSession(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.device_label}"
+
+class BankPayoutInfo(models.Model):
+    """
+    NUBAN bank payout information for students receiving peer payments.
+    """
+    SUPPORTED_BANKS = (
+        # Top Commercial Tier-1 & Tier-2 Banks
+        ('access', 'Access Bank'),
+        ('firstbank', 'First Bank of Nigeria'),
+        ('gtbank', 'Guaranty Trust Bank (GTBank)'),
+        ('uba', 'United Bank for Africa (UBA)'),
+        ('zenith', 'Zenith Bank'),
+        ('fcmb', 'First City Monument Bank (FCMB)'),
+        ('fidelity', 'Fidelity Bank'),
+        ('polaris', 'Polaris Bank'),
+        ('stanbic', 'Stanbic IBTC Bank'),
+        ('standard_chartered', 'Standard Chartered Bank'),
+        ('sterling', 'Sterling Bank'),
+        ('union', 'Union Bank of Nigeria'),
+        ('unity', 'Unity Bank'),
+        ('wema', 'Wema Bank'),
+        ('ecobank', 'Ecobank Nigeria'),
+        ('keystone', 'Keystone Bank'),
+        ('providus', 'Providus Bank'),
+        ('titan', 'Titan Trust Bank'),
+        ('heritage', 'Heritage Bank'),
+        ('citibank', 'Citibank Nigeria'),
+        # Popular Student Digital Neobanks & MFBs
+        ('opay', 'OPay'),
+        ('palmpay', 'PalmPay'),
+        ('kuda', 'Kuda Bank'),
+        ('moniepoint', 'Moniepoint MFB'),
+        ('mintyn', 'Mintyn Bank'),
+        ('fairmoney', 'FairMoney MFB'),
+        ('carbon', 'Carbon'),
+        ('vfd', 'VFD Microfinance Bank (VBank)'),
+        # Non-Interest Islamic Banks
+        ('jaiz', 'Jaiz Bank'),
+        ('lotus', 'Lotus Bank'),
+        ('taj', 'TAJBank'),
+        ('other', 'Other Licensed Financial Institution'),
+    )
+
+    nuban_validator = RegexValidator(
+        regex=r'^\d{10}$',
+        message="NUBAN account number must be exactly 10 numerical digits."
+    )
+
+    student = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='payout_info'
+    )
+    bank_name = models.CharField(
+        max_length=50,
+        choices=SUPPORTED_BANKS,
+        help_text="Select recipient Nigerian bank"
+    )
+    bank_code = models.CharField(max_length=20, blank=True)
+    account_number = models.CharField(
+        max_length=10,
+        validators=[nuban_validator],
+        help_text="10-digit NUBAN account number"
+    )
+    account_name = models.CharField(
+        max_length=200,
+        help_text="Verified name matching student bank records"
+    )
+    pending_payout_balance = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0.00
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Bank Payout Information"
+        verbose_name_plural = "Bank Payout Information"
+
+    def __str__(self):
+        return f"{self.student.username} - {self.get_bank_name_display()} ({self.account_number})"

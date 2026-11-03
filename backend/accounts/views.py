@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import ActiveSession, Institution, StudentProfile
+from .models import ActiveSession, BankPayoutInfo, Institution, StudentProfile
 from .serializers import (
     ActiveSessionSerializer,
     ChangePasswordSerializer,
@@ -15,6 +15,7 @@ from .serializers import (
     RegisterSerializer,
     StudentProfileSummarySerializer,
     StudentProfileUpdateSerializer,
+    BankPayoutInfoSerializer,
     UserSummarySerializer,
 )
 
@@ -253,3 +254,34 @@ class DeleteAccountView(APIView):
             {"message": "Your account has been deleted permanently."},
             status=status.HTTP_200_OK,
         )
+        
+
+# -------------------------------------------------------------
+# 3. PAYOUT & BANK DETAILS VIEWS
+# -------------------------------------------------------------
+class BankPayoutInfoView(generics.RetrieveUpdateAPIView):
+    """
+    GET/PUT/PATCH /api/payouts/bank-details/
+    Retrieve or update the authenticated student's NUBAN payout details.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BankPayoutInfoSerializer
+
+    def get_object(self):
+        payout_info, _ = BankPayoutInfo.objects.get_or_create(student=self.request.user)
+        return payout_info
+
+
+class SupportedBanksListView(APIView):
+    """
+    GET /api/payouts/banks/
+    Returns standard list of supported Nigerian banks for dropdown selection.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        banks = [
+            {"code": code, "name": name}
+            for code, name in BankPayoutInfo.SUPPORTED_BANKS
+        ]
+        return Response(banks, status=status.HTTP_200_OK)

@@ -3,6 +3,7 @@ import MainLayout from "./component/layout/MainLayout";
 import Discover from "./page/Discover";
 import AuthPage from "./page/AuthPage";
 import Placeholder from "./page/Placeholder";
+import ServiceDetail from "./page/ServiceDetail";
 import PublicProfile from "./page/PublicProfile";
 
 export default function App() {
@@ -16,6 +17,7 @@ return ( <BrowserRouter> <Routes>
     <Route element={<MainLayout />}>
       <Route path="/" element={<Discover />} />
       <Route path="/discover" element={<Discover />} />
+      <Route path="/services/:id" element={<ServiceDetail />} />
       <Route path="/activity" element={<Placeholder title="Activity" />} />
       <Route path="/messages" element={<Placeholder title="Messages" />} />
       <Route path="/profile" element={<PublicProfile />} />

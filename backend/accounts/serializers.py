@@ -4,7 +4,7 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import ActiveSession, Institution, StudentProfile
+from .models import ActiveSession, BankPayoutInfo, Institution, StudentProfile
 
 User = get_user_model()
 
@@ -223,3 +223,44 @@ class DeleteAccountSerializer(serializers.Serializer):
         if not user.check_password(value):
             raise serializers.ValidationError("Incorrect password.")
         return value
+
+    
+# -------------------------------------------------------------
+# 4. BANK PAYOUT & SETTINGS SERIALIZERS
+# -------------------------------------------------------------
+class BankPayoutInfoSerializer(serializers.ModelSerializer):
+    """
+    Serializer for managing student NUBAN recipient bank details.
+    """
+    bank_display_name = serializers.CharField(source='get_bank_name_display', read_only=True)
+
+    class Meta:
+        model = BankPayoutInfo
+        fields = [
+            'id',
+            'bank_name',
+            'bank_display_name',
+            'bank_code',
+            'account_number',
+            'account_name',
+            'pending_payout_balance',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'pending_payout_balance', 'updated_at']
+
+    def validate_account_number(self, value):
+        # Strip any accidental spaces or dashes
+        cleaned = value.strip().replace(' ', '').replace('-', '')
+        if not cleaned.isdigit() or len(cleaned) != 10:
+            raise serializers.ValidationError(
+                "NUBAN account number must be exactly 10 numerical digits."
+            )
+        return cleaned
+
+    def validate_account_name(self, value):
+        cleaned = value.strip()
+        if len(cleaned) < 3:
+            raise serializers.ValidationError(
+                "Please enter a valid account name matching your bank records."
+            )
+        return cleaned
