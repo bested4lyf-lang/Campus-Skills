@@ -20,7 +20,7 @@ return ( <BrowserRouter> <Routes>
       <Route path="/messages" element={<Placeholder title="Messages" />} />
       <Route path="/profile" element={<PublicProfile />} />
       <Route path="/profile/edit" element={<PublicProfile editing />} />
-      <Route path="/profile/:id" element={<PublicProfile />} />
+        <Route path="/profile/:id" element={<PublicProfile />} />
     </Route>
 
     {/* Redirect unknown routes to Discover. */}
