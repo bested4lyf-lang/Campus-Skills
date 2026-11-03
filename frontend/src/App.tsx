@@ -7,6 +7,7 @@ import ServiceDetail from "./page/ServiceDetail";
 import MyServices from "./page/MyServices";
 import Activity from "./page/Activity";
 import PublicProfile from "./page/PublicProfile";
+import Settings from "./page/Settings";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/profile" element={<PublicProfile />} />
           <Route path="/profile/edit" element={<PublicProfile editing />} />
           <Route path="/profile/:id" element={<PublicProfile />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
         {/* Redirect unknown routes to Discover. */}
