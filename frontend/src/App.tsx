@@ -3,7 +3,11 @@ import MainLayout from "./component/layout/MainLayout";
 import Discover from "./page/Discover";
 import AuthPage from "./page/AuthPage";
 import Placeholder from "./page/Placeholder";
+<<<<<<< HEAD
 import ServiceDetail from "./page/ServiceDetail";
+=======
+import Activity from "./page/Activity";
+>>>>>>> origin/feat/activity-page
 
 export default function App() {
 return ( <BrowserRouter> <Routes>
@@ -16,8 +20,12 @@ return ( <BrowserRouter> <Routes>
     <Route element={<MainLayout />}>
       <Route path="/" element={<Discover />} />
       <Route path="/discover" element={<Discover />} />
+<<<<<<< HEAD
       <Route path="/services/:id" element={<ServiceDetail />} />
       <Route path="/activity" element={<Placeholder title="Activity" />} />
+=======
+      <Route path="/activity" element={<Activity />} />
+>>>>>>> origin/feat/activity-page
       <Route path="/messages" element={<Placeholder title="Messages" />} />
       <Route path="/profile" element={<Placeholder title="Profile" />} />
     </Route>
