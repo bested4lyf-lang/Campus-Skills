@@ -9,8 +9,9 @@ export const formatNaira = (amount: number) => `₦${naira.format(amount)}`;
 /** "2026-10-08T09:30:00" -> "Oct 8" */
 export const formatShortDate = (iso: string) => monthDay.format(new Date(iso));
 
-/** "2026-10-17T15:00:00" -> "Sat, Oct 17 • 3:00 PM" */
+/** "2026-10-17T15:00:00" -> "Sat, Oct 17 • 3:00 PM" (or "Not specified" when there is no deadline) */
 export const formatNeededBy = (iso: string) => {
   const date = new Date(iso);
+  if (!iso || Number.isNaN(date.getTime())) return "Not specified";
   return `${weekdayMonthDay.format(date)} • ${time.format(date)}`;
 };
