@@ -1,4 +1,3 @@
-
 import type { AuthUser } from "../types/auth";
 import type { User } from "../types/user";
 import { clearToken } from "../api/authApi";
@@ -8,7 +7,9 @@ const USER_KEY = "campusskill:user";
 function mapAuthUser(user: AuthUser): User {
   return {
     id: String(user.id),
-    fullName: `${user.first_name} ${user.last_name}`.trim(),
+    fullName: `${user.first_name} ${user.last_name}`.trim() || user.username,
+    department: user.profile?.department || undefined,
+    level: user.profile?.level || undefined,
   };
 }
 

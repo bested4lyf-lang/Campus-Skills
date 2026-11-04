@@ -1,4 +1,3 @@
-
 // Authentication types for login and account creation.
 
 import type { User } from "./index";
@@ -14,17 +13,38 @@ export interface LoginForm {
 export interface RegisterForm {
   fullName: string;
   institution: string;
+  /** Resolved from the institutions list; null when no match is available */
+  institutionId?: number | null;
   email: string;
   departmentLevel: string;
   password: string;
   confirmPassword: string;
 }
 
-// User returned by the backend after authentication.
-export type AuthUser = User;
+export interface Institution {
+  id: number;
+  name: string;
+  short_code: string;
+  state: string;
+}
 
-export interface AuthResponse {
-  token: string;
+export interface AuthProfile {
+  department: string;
+  level: string;
+  institution: Institution | null;
+}
+
+// User returned by the backend after authentication.
+export interface AuthUser extends User {
+  profile?: AuthProfile | null;
+}
+
+export interface AuthTokens {
+  access: string;
+  refresh: string;
+}
+
+export interface AuthResponse extends AuthTokens {
   user: AuthUser;
 }
 
@@ -33,4 +53,3 @@ export interface AuthError {
   message?: string;
   errors?: Record<string, string[]>;
 }
-
