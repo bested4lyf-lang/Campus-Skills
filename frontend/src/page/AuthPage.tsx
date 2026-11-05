@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AuthLayout from "../component/auth/AuthLayout";
 import LoginForm from "../component/auth/LoginForm";
 import RegisterForm from "../component/auth/RegisterForm";
-import { ApiError, login, register, saveToken } from "../api/authApi";
+import { ApiError, login, register, saveTokens } from "../api/authApi";
 import { authService } from "../services/authService";
 import type { LoginForm as LoginFormData } from "../types/auth";
 import type { RegisterForm as RegisterFormData } from "../types/auth";
@@ -25,7 +25,7 @@ setError("");
 try {
   const response = await login(form);
 
-  saveToken(response.token, form.remember);
+  saveTokens(response, form.remember);
   authService.saveCurrentUser(response.user);
 
   navigate("/");
@@ -50,7 +50,7 @@ setError("");
 try {
   const response = await register(form);
 
-  saveToken(response.token, true);
+  saveTokens(response, true);
   authService.saveCurrentUser(response.user);
 
   navigate("/");

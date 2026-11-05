@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import BottomTabs from "./BottomTabs";
+import Footer from "./Footer";
 import { useAuth } from "../../hooks/useAuth";
 import { useActivityCount } from "../../hooks/useActivityCount";
 
@@ -13,11 +14,15 @@ export default function MainLayout() {
   const activityCount = useActivityCount();
 
   return (
-    <div className="min-h-dvh">
+    <div className="flex min-h-dvh flex-col">
       <Navbar user={user} onLogout={logout} activityCount={activityCount} />
-      <main className="pb-16 md:pb-0">
+      <main className="flex-1">
         <Outlet />
       </main>
+      {/* pb-16 keeps the footer clear of the fixed bottom tabs on mobile */}
+      <div className="pb-16 md:pb-0">
+        <Footer />
+      </div>
       <BottomTabs activityCount={user ? activityCount : 0} />
     </div>
   );
