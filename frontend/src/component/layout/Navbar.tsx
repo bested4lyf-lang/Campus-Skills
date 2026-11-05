@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
-import { Bell } from "lucide-react";
 import Logo from "../ui/Logo";
 import UserMenu from "./UserMenu";
+import NotificationsMenu from "./NotificationsMenu";
 import { NAV_ITEMS } from "./navItems";
 import type { User } from "../../types/user";
 
@@ -10,9 +10,6 @@ interface NavbarProps {
   onLogout: () => void;
   activityCount: number;
 }
-
-// TODO: drive this from a useNotifications hook.
-const HAS_UNREAD = true;
 
 export default function Navbar({ user, onLogout, activityCount }: NavbarProps) {
   return (
@@ -48,16 +45,7 @@ export default function Navbar({ user, onLogout, activityCount }: NavbarProps) {
         <div className="flex items-center justify-end gap-1 sm:gap-2">
           {user ? (
             <>
-              <button
-                type="button"
-                aria-label="Notifications"
-                className="relative flex size-10 items-center justify-center rounded-md text-ink-700 hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-              >
-                <Bell aria-hidden="true" className="size-5" />
-                {HAS_UNREAD && (
-                  <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-danger-600 ring-2 ring-surface" />
-                )}
-              </button>
+              <NotificationsMenu />
               <UserMenu user={user} onLogout={onLogout} />
             </>
           ) : (
