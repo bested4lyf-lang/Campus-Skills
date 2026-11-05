@@ -1,3 +1,5 @@
+import { apiGet, apiGetAll, apiSend } from "../api/client";
+import type { Page } from "../api/client";
 import type {
   AccountStatus,
   ActiveSession,
@@ -8,135 +10,106 @@ import type {
   WhatsappVisibility,
 } from "../types/settings";
 
-/**
- * In-memory stand-in for the account endpoints. Each method becomes one call later:
- *   getAccountStatus      -> GET    /api/requests/ and /api/auth/settings/payout/
- *   deactivateAccount     -> PATCH  /api/auth/settings/privacy/  { is_deactivated: true }
- *   deleteAccount         -> DELETE /api/auth/delete-account/    { password, confirm_text }
- *   changePassword        -> POST   /api/auth/change-password/   { old_password, new_password }
- *   listSessions          -> GET    /api/auth/sessions/
- *   listBanks             -> GET    /api/payouts/banks/
- *   getPayoutInfo/save    -> GET/PUT /api/auth/settings/payout/
- *   getPrivacy/savePrivacy-> GET/PATCH /api/auth/settings/privacy/ { whatsapp_visibility }
- * Notification preferences have no backend endpoint, so they stay in this browser.
- * To test the unblocked delete flow, set PENDING_REQUESTS and pendingPayoutBalance to 0.
- */
-const PENDING_REQUESTS = 2;
+interface ApiPayout {
+  bank_name: string | null;
+  account_number: string | null;
+  account_name: string | null;
+  pending_payout_balance: string | number | null;
+}
+
+interface ApiSession {
+  id: number;
+  device_label: string;
+  ip_address: string | null;
+  location: string | null;
+  last_active: string;
+}
+
 const PREFS_KEY = "campusskill_notification_prefs";
 const DEFAULT_PREFS: NotificationPrefs = { newRequests: true, statusUpdates: true, newReviews: true };
 
-// Same codes as the backend list (shortened for the demo)
-const BANKS: Bank[] = [
-  { code: "access", name: "Access Bank" },
-  { code: "firstbank", name: "First Bank of Nigeria" },
-  { code: "gtbank", name: "Guaranty Trust Bank (GTBank)" },
-  { code: "uba", name: "United Bank for Africa (UBA)" },
-  { code: "zenith", name: "Zenith Bank" },
-  { code: "fcmb", name: "First City Monument Bank (FCMB)" },
-  { code: "fidelity", name: "Fidelity Bank" },
-  { code: "polaris", name: "Polaris Bank" },
-  { code: "stanbic", name: "Stanbic IBTC Bank" },
-  { code: "sterling", name: "Sterling Bank" },
-  { code: "union", name: "Union Bank of Nigeria" },
-  { code: "wema", name: "Wema Bank" },
-  { code: "ecobank", name: "Ecobank Nigeria" },
-  { code: "providus", name: "Providus Bank" },
-  { code: "jaiz", name: "Jaiz Bank" },
-  { code: "opay", name: "OPay" },
-  { code: "palmpay", name: "PalmPay" },
-  { code: "kuda", name: "Kuda Bank" },
-  { code: "moniepoint", name: "Moniepoint MFB" },
-  { code: "fairmoney", name: "FairMoney MFB" },
-];
+const toPayout = (row: ApiPayout): PayoutInfo => ({
+  bankName: row.bank_name ?? "",
+  accountNumber: row.account_number ?? "",
+  accountName: row.account_name ?? "",
+  pendingPayoutBalance: Number(row.pending_payout_balance ?? 0),
+});
 
-let payout: PayoutInfo = {
-  bankName: "",
-  accountNumber: "",
-  accountName: "",
-  pendingPayoutBalance: 8000,
-};
-let visibility: WhatsappVisibility = "accepted_only";
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000).toISOString();
-
+/**
+ *   getAccountStatus  -> GET    /api/requests/?status=pending and ?status=accepted, /api/payouts/bank-details/
+ *   deactivateAccount -> PATCH  /api/auth/settings/privacy/   { is_deactivated: true }
+ *   deleteAccount     -> DELETE /api/auth/delete-account/     { password, confirm_text }
+ *   changePassword    -> POST   /api/auth/change-password/    { old_password, new_password }
+ *   listSessions      -> GET    /api/auth/sessions/
+ *   listBanks         -> GET    /api/payouts/banks/
+ *   getPayoutInfo / savePayoutInfo -> GET / PATCH /api/payouts/bank-details/
+ *   getPrivacy / savePrivacy       -> GET / PATCH /api/auth/settings/privacy/
+ * Notification preferences have no backend endpoint, so they stay in this browser.
+ */
 export const settingsService = {
   async getAccountStatus(): Promise<AccountStatus> {
-    await wait(250);
-    return { pendingRequests: PENDING_REQUESTS, pendingPayout: payout.pendingPayoutBalance };
+    const [pending, accepted, payout] = await Promise.all([
+      apiGet<Page<unknown>>("/requests/?status=pending"),
+      apiGet<Page<unknown>>("/requests/?status=accepted"),
+      apiGet<ApiPayout>("/payouts/bank-details/"),
+    ]);
+    return {
+      pendingRequests: pending.count + accepted.count,
+      pendingPayout: toPayout(payout).pendingPayoutBalance,
+    };
   },
 
   async deactivateAccount(): Promise<void> {
-    await wait(400);
+    await apiSend("PATCH", "/auth/settings/privacy/", { is_deactivated: true });
   },
 
   async deleteAccount(password: string, confirmText: string): Promise<void> {
-    await wait(500);
-    if (confirmText !== "DELETE") {
-      throw new Error("You must type 'DELETE' to confirm account deletion.");
-    }
-    if (!password) {
-      throw new Error("Please enter your password.");
-    }
-    if (PENDING_REQUESTS > 0 || payout.pendingPayoutBalance > 0) {
-      throw new Error(
-        "Cannot delete account: you still have pending requests or an awaiting payout. Resolve them first.",
-      );
-    }
+    await apiSend("DELETE", "/auth/delete-account/", { password, confirm_text: confirmText });
   },
 
   async changePassword(oldPassword: string, newPassword: string): Promise<void> {
-    await wait(500);
-    if (!oldPassword) throw new Error("Current password is incorrect.");
-    if (newPassword.length < 8) {
-      throw new Error("This password is too short. It must contain at least 8 characters.");
-    }
+    await apiSend("POST", "/auth/change-password/", { old_password: oldPassword, new_password: newPassword });
   },
 
   async listSessions(): Promise<ActiveSession[]> {
-    await wait(250);
-    return [
-      { id: 1, deviceLabel: "Chrome on Windows", ipAddress: "102.89.0.10", location: "Lagos, Nigeria", lastActive: hoursAgo(0), isCurrent: true },
-      { id: 2, deviceLabel: "Safari on iPhone", ipAddress: "102.89.0.24", location: "Lagos, Nigeria", lastActive: hoursAgo(5) },
-    ];
+    const rows = await apiGetAll<ApiSession>("/auth/sessions/");
+    return rows.map((row, index) => ({
+      id: row.id,
+      deviceLabel: row.device_label,
+      ipAddress: row.ip_address ?? "",
+      location: row.location ?? "",
+      lastActive: row.last_active,
+      isCurrent: index === 0,
+    }));
   },
 
   async listBanks(): Promise<Bank[]> {
-    await wait(150);
-    return BANKS.map((bank) => ({ ...bank }));
+    return apiGet<Bank[]>("/payouts/banks/");
   },
 
   async getPayoutInfo(): Promise<PayoutInfo> {
-    await wait(250);
-    return { ...payout };
+    return toPayout(await apiGet<ApiPayout>("/payouts/bank-details/"));
   },
 
   async savePayoutInfo(input: PayoutInput): Promise<PayoutInfo> {
-    await wait(500);
-    const accountNumber = input.accountNumber.trim().replace(/[\s-]/g, "");
-    if (!/^\d{10}$/.test(accountNumber)) {
-      throw new Error("NUBAN account number must be exactly 10 numerical digits.");
-    }
-    const accountName = input.accountName.trim();
-    if (accountName.length < 3) {
-      throw new Error("Please enter a valid account name matching your bank records.");
-    }
-    if (!BANKS.some((bank) => bank.code === input.bankName)) {
-      throw new Error("Please choose a bank from the list.");
-    }
-    payout = { ...payout, bankName: input.bankName, accountNumber, accountName };
-    return { ...payout };
+    const row = await apiSend<ApiPayout>("PATCH", "/payouts/bank-details/", {
+      bank_name: input.bankName,
+      account_number: input.accountNumber,
+      account_name: input.accountName,
+    });
+    return toPayout(row);
   },
 
   async getPrivacy(): Promise<WhatsappVisibility> {
-    await wait(200);
-    return visibility;
+    const row = await apiGet<{ whatsapp_visibility: WhatsappVisibility }>("/auth/settings/privacy/");
+    return row.whatsapp_visibility;
   },
 
   async savePrivacy(next: WhatsappVisibility): Promise<WhatsappVisibility> {
-    await wait(400);
-    visibility = next;
-    return visibility;
+    const row = await apiSend<{ whatsapp_visibility: WhatsappVisibility }>("PATCH", "/auth/settings/privacy/", {
+      whatsapp_visibility: next,
+    });
+    return row.whatsapp_visibility;
   },
 
   getNotificationPrefs(): NotificationPrefs {
