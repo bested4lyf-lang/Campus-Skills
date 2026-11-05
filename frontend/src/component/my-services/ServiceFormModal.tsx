@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { ImagePlus, Plus, Upload, X } from "lucide-react";
 import ModalShell from "./ModalShell";
 import { MAX_SKILLS, SUGGESTED_SKILLS } from "./serviceHelpers";
+import { useCategoryNames } from "../../hooks/useCategoryNames";
 import type { OwnService, ServiceFormValues } from "../../types/myServices";
 
 interface ServiceFormModalProps {
@@ -28,7 +29,7 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
   const titleId = `${uid}-heading`;
 
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [category, setCategory] = useState(initial?.category ?? "")
+  const [category, setCategory] = useState(initial?.category ?? "");
   const [price, setPrice] = useState(initial ? String(initial.price) : "");
   const [skills, setSkills] = useState<string[]>(initial?.skills ?? []);
   const [skillInput, setSkillInput] = useState("");
@@ -41,10 +42,10 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
 
   const categories = useCategoryNames();
 
-   // Pick the first category by default once the list arrives
-   useEffect(() => {
-     if (!category && categories.length > 0) setCategory(categories[0]);
-   }, [category, categories]);
+  // Pick the first category by default once the list arrives
+  useEffect(() => {
+    if (!category && categories.length > 0) setCategory(categories[0]);
+  }, [category, categories]);
 
   const fileInput = useRef<HTMLInputElement>(null);
   const blobUrl = useRef<string | null>(null);
@@ -216,7 +217,7 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
                 }}
                 className={`${inputClass} ${borderFor(!!errors.category)}`}
               >
-                {SERVICE_CATEGORIES.map((c) => (
+                {categories.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
