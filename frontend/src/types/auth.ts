@@ -31,6 +31,7 @@ export interface Institution {
 export interface AuthProfile {
   department: string;
   level: string;
+  avatar?: string | null;
   institution: Institution | null;
 }
 

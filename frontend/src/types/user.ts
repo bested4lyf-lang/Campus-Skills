@@ -3,4 +3,5 @@ export interface User {
   fullName: string;
   department?: string;
   level?: string;
+  photoUrl?: string;
 }

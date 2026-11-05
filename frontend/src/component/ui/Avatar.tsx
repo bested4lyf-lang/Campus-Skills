@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const COLORS = [
   "#9A3412",
   "#4338CA",
@@ -31,6 +33,8 @@ interface AvatarProps {
   name: string;
   size?: number;
   className?: string;
+  /** Profile photo; the initials show when it's missing or fails to load */
+  src?: string;
 }
 
 export default function Avatar({
@@ -38,7 +42,25 @@ export default function Avatar({
   name,
   size = 32,
   className = "",
+  src,
 }: AvatarProps) {
+  const [failedSrc, setFailedSrc] = useState<string | undefined>();
+
+  if (src && src !== failedSrc) {
+    return (
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        width={size}
+        height={size}
+        onError={() => setFailedSrc(src)}
+        className={`shrink-0 rounded-full object-cover ${className}`}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+
   return (
     <span
       aria-hidden="true"

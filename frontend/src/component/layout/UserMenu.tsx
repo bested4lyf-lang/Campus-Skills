@@ -47,7 +47,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1 rounded-full p-1 hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
       >
-        <Avatar id={user.id} name={user.fullName} />
+        <Avatar id={user.id} name={user.fullName} src={user.photoUrl} />
         <ChevronDown
           aria-hidden="true"
           className={`hidden size-4 text-ink-500 transition-transform sm:block ${open ? "rotate-180" : ""}`}

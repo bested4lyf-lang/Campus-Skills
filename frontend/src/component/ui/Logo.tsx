@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 
-export default function Logo() {
+interface LogoProps {
+  /** "light" is for dark backgrounds such as the footer */
+  tone?: "default" | "light";
+}
+
+export default function Logo({ tone = "default" }: LogoProps) {
   return (
     <Link
       to="/"
@@ -22,7 +27,11 @@ export default function Logo() {
           <circle cx="12" cy="12" r="3" />
         </svg>
       </span>
-      <span className="font-display text-[17px] font-bold text-ink-900">
+      <span
+        className={`font-display text-[17px] font-bold ${
+          tone === "light" ? "text-white" : "text-ink-900"
+        }`}
+      >
         CampusSkill
       </span>
     </Link>

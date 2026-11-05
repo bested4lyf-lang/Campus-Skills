@@ -2,6 +2,7 @@ import { apiGet, apiGetAll, apiSend } from "../api/client";
 import type { Page } from "../api/client";
 import type { ProfileFormValues, ProfileListing, ProfileReview, StudentProfile } from "../types/profile";
 import type { User } from "../types/user";
+   import { authService } from "./authService";
 
 const API_BASE: string = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000/api";
 const ORIGIN = new URL(API_BASE).origin;
@@ -192,6 +193,16 @@ export const profileService = {
       await apiSend("PATCH", "/auth/profile/", form);
     }
 
-    return loadOwn();
+       const updated = await loadOwn();
+
+   // Keep the navbar in step with what was just saved
+   authService.updateCurrentUser({
+     fullName: updated.fullName,
+     department: updated.department || undefined,
+     level: updated.level || undefined,
+     photoUrl: updated.photoUrl,
+   });
+
+   return updated;
   },
 };
