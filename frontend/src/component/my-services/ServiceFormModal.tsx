@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { ImagePlus, Plus, Upload, X } from "lucide-react";
 import ModalShell from "./ModalShell";
-import { MAX_SKILLS, SERVICE_CATEGORIES, SUGGESTED_SKILLS } from "./serviceHelpers";
+import { MAX_SKILLS, SUGGESTED_SKILLS } from "./serviceHelpers";
 import type { OwnService, ServiceFormValues } from "../../types/myServices";
 
 interface ServiceFormModalProps {
@@ -28,7 +28,7 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
   const titleId = `${uid}-heading`;
 
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [category, setCategory] = useState(initial?.category ?? "Media");
+  const [category, setCategory] = useState(initial?.category ?? "")
   const [price, setPrice] = useState(initial ? String(initial.price) : "");
   const [skills, setSkills] = useState<string[]>(initial?.skills ?? []);
   const [skillInput, setSkillInput] = useState("");
@@ -38,6 +38,13 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
   const [errors, setErrors] = useState<Errors>({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const categories = useCategoryNames();
+
+   // Pick the first category by default once the list arrives
+   useEffect(() => {
+     if (!category && categories.length > 0) setCategory(categories[0]);
+   }, [category, categories]);
 
   const fileInput = useRef<HTMLInputElement>(null);
   const blobUrl = useRef<string | null>(null);
