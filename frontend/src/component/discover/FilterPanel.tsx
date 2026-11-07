@@ -6,16 +6,13 @@ export interface FilterPanelProps {
   categories: DiscoverCategory[];
   institutions: DiscoverInstitution[];
   skills: string[];
-  providers: { id: number; name: string }[];
   category: string;
   institution: string;
   skill: string;
-  provider: string;
   maxPrice: number;
   onCategory: (slug: string) => void;
   onInstitution: (code: string) => void;
   onSkill: (skill: string) => void;
-  onProvider: (id: string) => void;
   onMaxPrice: (value: number) => void;
   onClear: () => void;
 }
@@ -27,16 +24,13 @@ export default function FilterPanel({
   categories,
   institutions,
   skills,
-  providers,
   category,
   institution,
   skill,
-  provider,
   maxPrice,
   onCategory,
   onInstitution,
   onSkill,
-  onProvider,
   onMaxPrice,
   onClear,
 }: FilterPanelProps) {
@@ -133,26 +127,6 @@ export default function FilterPanel({
           <span>{formatNaira(MIN_PRICE)}</span>
           <span>{formatNaira(MAX_PRICE)}</span>
         </div>
-      </div>
-
-      {/* Provider Filter */}
-      <div>
-        <label htmlFor="filter-provider" className="text-sm font-semibold text-ink-900">
-          Service provider
-        </label>
-        <select
-          id="filter-provider"
-          value={provider}
-          onChange={(e) => onProvider(e.target.value)}
-          className={selectClass}
-        >
-          <option value="">All students</option>
-          {providers.map((p) => (
-            <option key={p.id} value={String(p.id)}>
-              {p.name}
-            </option>
-          ))}
-        </select>
       </div>
     </div>
   );
