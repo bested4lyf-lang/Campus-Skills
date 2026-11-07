@@ -123,6 +123,10 @@ class ServiceListingCreateUpdateSerializer(serializers.ModelSerializer):
         decimal_places=2,
         min_value=Decimal('500.00')
     )
+    is_active = serializers.BooleanField(
+        default=True,
+        required=False
+    )
 
     class Meta:
         model = ServiceListing

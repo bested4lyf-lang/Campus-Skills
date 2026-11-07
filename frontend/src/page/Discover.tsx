@@ -32,13 +32,16 @@ export default function Discover() {
 
   const filterProps = {
     categories: d.categories,
+    institutions: d.institutions,
     skills: d.skills,
     providers: d.providers,
     category: d.category,
+    institution: d.institution,
     skill: d.skill,
     provider: d.provider,
     maxPrice: d.maxPrice,
     onCategory: d.setCategory,
+    onInstitution: d.setInstitution,
     onSkill: d.setSkill,
     onProvider: d.setProvider,
     onMaxPrice: d.setMaxPrice,

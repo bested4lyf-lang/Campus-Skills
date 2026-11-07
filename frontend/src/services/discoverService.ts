@@ -1,5 +1,5 @@
 import { apiGetAll } from "../api/client";
-import type { DiscoverCategory, ServiceCardData } from "../types/discover";
+import type { DiscoverCategory, DiscoverInstitution, ServiceCardData } from "../types/discover";
 
 export const MIN_PRICE = 1000;
 export const MAX_PRICE = 60000;
@@ -17,7 +17,14 @@ interface ApiService {
   starting_price: string;
   cover_image: string | null;
   category: ApiCategory | null;
-  provider: { id: number; username: string; first_name: string; last_name: string };
+  provider: {
+    id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+    institution_name?: string;
+    institution_short_code?: string;
+  };
   average_rating: number | null;
   review_count: number | null;
   created_at: string;
@@ -34,6 +41,8 @@ function toCard(item: ApiService): ServiceCardData {
     categoryName: item.category?.name ?? "Other",
     providerId: item.provider.id,
     providerName: name || item.provider.username,
+    institutionName: item.provider.institution_name,
+    institutionShortCode: item.provider.institution_short_code,
     rating: item.average_rating ?? 0,
     reviewCount: item.review_count ?? 0,
     createdAt: item.created_at,
@@ -43,6 +52,7 @@ function toCard(item: ApiService): ServiceCardData {
 export interface ServiceQuery {
   query: string;
   category: string;
+  institution: string;
   maxPrice: number;
 }
 
@@ -53,11 +63,18 @@ export const discoverService = {
     return rows.map(({ id, name, slug }) => ({ id, name, slug }));
   },
 
-  /** GET /api/services/?search=&category=&max_price= */
-  async listServices({ query, category, maxPrice }: ServiceQuery): Promise<ServiceCardData[]> {
+  /** GET /api/auth/institutions/ */
+  async listInstitutions(): Promise<DiscoverInstitution[]> {
+    const rows = await apiGetAll<DiscoverInstitution>("/auth/institutions/");
+    return rows;
+  },
+
+  /** GET /api/services/?search=&category=&institution=&max_price= */
+  async listServices({ query, category, institution, maxPrice }: ServiceQuery): Promise<ServiceCardData[]> {
     const qs = new URLSearchParams();
     if (query) qs.set("search", query);
     if (category) qs.set("category", category);
+    if (institution) qs.set("institution", institution);
     if (maxPrice < MAX_PRICE) qs.set("max_price", String(maxPrice));
     const suffix = qs.toString();
 

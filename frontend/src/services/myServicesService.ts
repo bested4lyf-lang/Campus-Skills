@@ -18,6 +18,7 @@ interface ApiOwnService {
   category: ApiCategory | null;
   average_rating: number | null;
   review_count: number | null;
+  is_active?: boolean;
 }
 
 interface ApiMe {
@@ -43,6 +44,7 @@ function toOwnService(row: ApiOwnService): OwnService {
     coverImageUrl: row.cover_image ?? undefined,
     rating: reviewCount > 0 && row.average_rating ? row.average_rating : null,
     reviewCount,
+    isActive: row.is_active ?? true,
   };
 }
 
@@ -61,6 +63,7 @@ async function toFormData(values: ServiceFormValues): Promise<FormData> {
   form.append("skill_tag", values.skills.join(", ").slice(0, 100));
   form.append("description", values.description);
   form.append("starting_price", String(values.price));
+  form.append("is_active", String(values.isActive ?? true));
   if (values.coverImage) form.append("cover_image", values.coverImage);
   return form;
 }

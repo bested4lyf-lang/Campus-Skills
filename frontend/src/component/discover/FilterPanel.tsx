@@ -1,16 +1,19 @@
 import { MAX_PRICE, MIN_PRICE } from "../../services/discoverService";
 import { formatNaira } from "../../utils/format";
-import type { DiscoverCategory } from "../../types/discover";
+import type { DiscoverCategory, DiscoverInstitution } from "../../types/discover";
 
 export interface FilterPanelProps {
   categories: DiscoverCategory[];
+  institutions: DiscoverInstitution[];
   skills: string[];
   providers: { id: number; name: string }[];
   category: string;
+  institution: string;
   skill: string;
   provider: string;
   maxPrice: number;
   onCategory: (slug: string) => void;
+  onInstitution: (code: string) => void;
   onSkill: (skill: string) => void;
   onProvider: (id: string) => void;
   onMaxPrice: (value: number) => void;
@@ -22,13 +25,16 @@ const selectClass =
 
 export default function FilterPanel({
   categories,
+  institutions,
   skills,
   providers,
   category,
+  institution,
   skill,
   provider,
   maxPrice,
   onCategory,
+  onInstitution,
   onSkill,
   onProvider,
   onMaxPrice,
@@ -45,6 +51,27 @@ export default function FilterPanel({
         </button>
       </div>
 
+      {/* Campus / University Filter */}
+      <div>
+        <label htmlFor="filter-institution" className="text-sm font-semibold text-ink-900">
+          Campus / University
+        </label>
+        <select
+          id="filter-institution"
+          value={institution}
+          onChange={(e) => onInstitution(e.target.value)}
+          className={selectClass}
+        >
+          <option value="">All Campuses</option>
+          {institutions.map((inst) => (
+            <option key={inst.id} value={inst.short_code || String(inst.id)}>
+              {inst.short_code ? `${inst.name} (${inst.short_code})` : inst.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Skill Filter */}
       <div>
         <label htmlFor="filter-skill" className="text-sm font-semibold text-ink-900">
           Skill
@@ -59,6 +86,7 @@ export default function FilterPanel({
         </select>
       </div>
 
+      {/* Category Pills */}
       <div>
         <p className="text-sm font-semibold text-ink-900">Category</p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -83,6 +111,7 @@ export default function FilterPanel({
         </div>
       </div>
 
+      {/* Price Slider */}
       <div>
         <div className="flex items-center justify-between">
           <label htmlFor="filter-price" className="text-sm font-semibold text-ink-900">
@@ -106,6 +135,7 @@ export default function FilterPanel({
         </div>
       </div>
 
+      {/* Provider Filter */}
       <div>
         <label htmlFor="filter-provider" className="text-sm font-semibold text-ink-900">
           Service provider

@@ -4,6 +4,13 @@ export interface DiscoverCategory {
   slug: string;
 }
 
+export interface DiscoverInstitution {
+  id: number;
+  name: string;
+  short_code: string;
+  state: string;
+}
+
 export interface ServiceCardData {
   id: number;
   title: string;
@@ -13,6 +20,8 @@ export interface ServiceCardData {
   categoryName: string;
   providerId: number;
   providerName: string;
+  institutionName?: string;
+  institutionShortCode?: string;
   rating: number;
   reviewCount: number;
   createdAt: string;

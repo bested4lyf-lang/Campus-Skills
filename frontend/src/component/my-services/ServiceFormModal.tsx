@@ -39,6 +39,7 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
   const [errors, setErrors] = useState<Errors>({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [isActive, setIsActive] = useState<boolean>(initial?.isActive ?? true);
 
   const categories = useCategoryNames();
 
@@ -148,6 +149,7 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
         skills,
         description: description.trim(),
         coverImage,
+        isActive,
       });
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -402,8 +404,26 @@ export default function ServiceFormModal({ mode, initial, onClose, onSubmit }: S
             )}
             {errors.image && <p className="mt-1.5 text-sm text-danger-600">{errors.image}</p>}
           </div>
+        
+          {/* Publish status toggle */}
+          <div className="rounded-lg border border-line bg-surface-subtle p-3.5">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="mt-0.5 size-4 rounded border-line text-brand-600 focus:ring-brand-500"
+              />
+              <div className="text-sm">
+                <span className="font-semibold text-ink-900">Publish service immediately</span>
+                <p className="mt-0.5 text-xs text-ink-500">
+                  When checked, your service will be live and discoverable by students across campus. Uncheck to keep it as an unlisted draft.
+                </p>
+              </div>
+            </label>
+          </div>
         </div>
-
+        
         {submitError && (
           <p role="alert" className="mt-4 text-sm font-medium text-danger-600">
             {submitError}

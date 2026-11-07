@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { MAX_PRICE, discoverService } from "../services/discoverService";
-import type { DiscoverCategory, ServiceCardData, SortKey } from "../types/discover";
+import type { DiscoverCategory, DiscoverInstitution, ServiceCardData, SortKey } from "../types/discover";
 
 export function useDiscover(query: string) {
   const [category, setCategory] = useState("");
+  const [institution, setInstitution] = useState("");
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [skill, setSkill] = useState("");
   const [provider, setProvider] = useState("");
@@ -11,26 +12,35 @@ export function useDiscover(query: string) {
 
   const [services, setServices] = useState<ServiceCardData[]>([]);
   const [categories, setCategories] = useState<DiscoverCategory[]>([]);
+  const [institutions, setInstitutions] = useState<DiscoverInstitution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
+  // Fetch Categories and Universities on Mount
   useEffect(() => {
     let cancelled = false;
+
     discoverService
       .listCategories()
       .then((rows) => {
         if (!cancelled) setCategories(rows);
       })
-      .catch(() => {
-        // The category chips just stay empty; the services list still works
-      });
+      .catch(() => {});
+
+    discoverService
+      .listInstitutions()
+      .then((rows) => {
+        if (!cancelled) setInstitutions(rows);
+      })
+      .catch(() => {});
+
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Refetch when a server-side filter changes (short delay so the price slider doesn't spam requests)
+  // Refetch when server-side filters change (query, category, institution, maxPrice)
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -38,7 +48,7 @@ export function useDiscover(query: string) {
 
     const timer = window.setTimeout(() => {
       discoverService
-        .listServices({ query, category, maxPrice })
+        .listServices({ query, category, institution, maxPrice })
         .then((rows) => {
           if (!cancelled) setServices(rows);
         })
@@ -54,7 +64,7 @@ export function useDiscover(query: string) {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [query, category, maxPrice, attempt]);
+  }, [query, category, institution, maxPrice, attempt]);
 
   const skills = useMemo(
     () => [...new Set(services.map((s) => s.skillTag).filter(Boolean))].sort(),
@@ -80,10 +90,15 @@ export function useDiscover(query: string) {
   }, [services, skill, provider, sort]);
 
   const activeCount =
-    (category ? 1 : 0) + (skill ? 1 : 0) + (provider ? 1 : 0) + (maxPrice < MAX_PRICE ? 1 : 0);
+    (category ? 1 : 0) +
+    (institution ? 1 : 0) +
+    (skill ? 1 : 0) +
+    (provider ? 1 : 0) +
+    (maxPrice < MAX_PRICE ? 1 : 0);
 
   const clearFilters = () => {
     setCategory("");
+    setInstitution("");
     setSkill("");
     setProvider("");
     setMaxPrice(MAX_PRICE);
@@ -91,6 +106,7 @@ export function useDiscover(query: string) {
 
   return {
     categories,
+    institutions,
     skills,
     providers,
     visible,
@@ -98,12 +114,14 @@ export function useDiscover(query: string) {
     error,
     retry: () => setAttempt((n) => n + 1),
     category,
+    institution,
     skill,
     provider,
     maxPrice,
     sort,
     activeCount,
     setCategory,
+    setInstitution,
     setSkill,
     setProvider,
     setMaxPrice,

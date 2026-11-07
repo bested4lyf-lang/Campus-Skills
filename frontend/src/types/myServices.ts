@@ -10,6 +10,7 @@ export interface OwnService {
   coverImageUrl?: string;
   rating: number | null; // null when there are no reviews yet
   reviewCount: number;
+  isActive?: boolean;
 }
 
 // What the create / edit form sends back
@@ -20,6 +21,7 @@ export interface ServiceFormValues {
   skills: string[];
   description: string;
   coverImage: File | null;
+  isActive: boolean;
 }
 
 // Numbers and text shown in the profile card and the "One account, two roles" card

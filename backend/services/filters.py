@@ -1,6 +1,6 @@
 from decimal import Decimal, InvalidOperation
-from django.db.models import Q
-
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
 
 def apply_service_filters(queryset, params, user=None):
     """
@@ -25,16 +25,22 @@ def apply_service_filters(queryset, params, user=None):
         else:
             queryset = queryset.filter(category__slug__iexact=category)
 
-    # 3. Case-insensitive Keyword Search
+    # 3. Case-insensitive Keyword Search (matches title, description, skills, & provider name/username)
     search = params.get('search')
     if search:
-        queryset = queryset.filter(
+        search = search.strip()
+        queryset = queryset.annotate(
+            provider_full_name=Concat('provider__first_name', Value(' '), 'provider__last_name')
+        ).filter(
             Q(title__icontains=search) |
             Q(description__icontains=search) |
             Q(skill_tag__icontains=search) |
-            Q(provider__username__icontains=search)
+            Q(provider__username__icontains=search) |
+            Q(provider__first_name__icontains=search) |
+            Q(provider__last_name__icontains=search) |
+            Q(provider_full_name__icontains=search)
         )
-
+        
     # 4. Price Bounds (in Nigerian Naira)
     min_price = params.get('min_price')
     if min_price:

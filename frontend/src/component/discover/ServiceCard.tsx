@@ -27,6 +27,11 @@ export default function ServiceCard({ service }: { service: ServiceCardData }) {
           <span className="flex min-w-0 items-center gap-2">
             <Avatar id={String(service.providerId)} name={service.providerName} size={24} />
             <span className="truncate text-sm text-ink-700">{service.providerName}</span>
+            {service.institutionShortCode && (
+              <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[10px] font-bold text-brand-700">
+                {service.institutionShortCode}
+              </span>
+            )}
           </span>
           <span className="flex flex-none items-center gap-1 text-xs text-ink-500">
             {service.reviewCount > 0 ? (
