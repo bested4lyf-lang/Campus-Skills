@@ -34,16 +34,13 @@ export default function Discover() {
     categories: d.categories,
     institutions: d.institutions,
     skills: d.skills,
-    providers: d.providers,
     category: d.category,
     institution: d.institution,
     skill: d.skill,
-    provider: d.provider,
     maxPrice: d.maxPrice,
     onCategory: d.setCategory,
     onInstitution: d.setInstitution,
     onSkill: d.setSkill,
-    onProvider: d.setProvider,
     onMaxPrice: d.setMaxPrice,
     onClear: clearAll,
   };
@@ -57,7 +54,7 @@ export default function Discover() {
 
       <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-6 md:py-8 lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-8">
         <aside className="hidden lg:block">
-          <div className="sticky top-20 rounded-xl border border-line bg-surface p-5">
+          <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface p-5 custom-scrollbar">
             <FilterPanel {...filterProps} />
           </div>
         </aside>
