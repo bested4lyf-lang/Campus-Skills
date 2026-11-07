@@ -7,7 +7,6 @@ export function useDiscover(query: string) {
   const [institution, setInstitution] = useState("");
   const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [skill, setSkill] = useState("");
-  const [provider, setProvider] = useState("");
   const [sort, setSort] = useState<SortKey>("relevant");
 
   const [services, setServices] = useState<ServiceCardData[]>([]);
@@ -71,36 +70,26 @@ export function useDiscover(query: string) {
     [services],
   );
 
-  const providers = useMemo(() => {
-    const byId = new Map<number, string>();
-    services.forEach((s) => byId.set(s.providerId, s.providerName));
-    return [...byId].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
-  }, [services]);
-
   const visible = useMemo(() => {
-    const rows = services.filter(
-      (s) => (!skill || s.skillTag === skill) && (!provider || String(s.providerId) === provider),
-    );
+    const rows = services.filter((s) => !skill || s.skillTag === skill);
     const sorted = [...rows];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
     if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
     if (sort === "newest") sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     return sorted;
-  }, [services, skill, provider, sort]);
+  }, [services, skill, sort]);
 
   const activeCount =
     (category ? 1 : 0) +
     (institution ? 1 : 0) +
     (skill ? 1 : 0) +
-    (provider ? 1 : 0) +
     (maxPrice < MAX_PRICE ? 1 : 0);
 
   const clearFilters = () => {
     setCategory("");
     setInstitution("");
     setSkill("");
-    setProvider("");
     setMaxPrice(MAX_PRICE);
   };
 
@@ -108,7 +97,6 @@ export function useDiscover(query: string) {
     categories,
     institutions,
     skills,
-    providers,
     visible,
     loading,
     error,
@@ -116,14 +104,12 @@ export function useDiscover(query: string) {
     category,
     institution,
     skill,
-    provider,
     maxPrice,
     sort,
     activeCount,
     setCategory,
     setInstitution,
     setSkill,
-    setProvider,
     setMaxPrice,
     setSort,
     clearFilters,
